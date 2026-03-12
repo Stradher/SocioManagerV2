@@ -14,7 +14,6 @@ namespace SocioManagerV2.ViewModels
 {
     public class MainViewModel : INotifyPropertyChanged
     {
-        private readonly SociosContext _context = new SociosContext();
         private Socio _selectedSocio;
         private Socio _currentSocio;
 
@@ -67,7 +66,10 @@ namespace SocioManagerV2.ViewModels
 
         public MainViewModel()
         {
-            _context.Database.EnsureCreated();
+            using (var context = new SociosContext())
+            {
+                context.Database.EnsureCreated();
+            }
 
             Socios = new ObservableCollection<Socio>();
             CurrentSocio = new Socio { FechaNacimiento = DateTime.Now, FechaDeAlta = DateTime.Now };
@@ -85,11 +87,14 @@ namespace SocioManagerV2.ViewModels
         {
             try
             {
-                var list = await _context.Socios.ToListAsync();
-                Socios.Clear();
-                foreach (var socio in list)
+                using (var context = new SociosContext())
                 {
-                    Socios.Add(socio);
+                    var list = await context.Socios.AsNoTracking().ToListAsync();
+                    Socios.Clear();
+                    foreach (var socio in list)
+                    {
+                        Socios.Add(socio);
+                    }
                 }
             }
             catch (Exception ex)
@@ -163,32 +168,35 @@ namespace SocioManagerV2.ViewModels
                     return;
                 }
 
-                var socioToUpdate = await _context.Socios.FindAsync(CurrentSocio.Id);
-                if (socioToUpdate != null)
+                using (var context = new SociosContext())
                 {
-                    socioToUpdate.Nombre = CurrentSocio.Nombre;
-                    socioToUpdate.Apellido1 = CurrentSocio.Apellido1;
-                    socioToUpdate.Apellido2 = CurrentSocio.Apellido2;
-                    socioToUpdate.Alta = CurrentSocio.Alta;
-                    socioToUpdate.Dni = CurrentSocio.Dni;
-                    socioToUpdate.FechaNacimiento = CurrentSocio.FechaNacimiento;
-                    socioToUpdate.NumeroDeSocio = CurrentSocio.NumeroDeSocio;
-                    socioToUpdate.NumeroDeTelefono = CurrentSocio.NumeroDeTelefono;
-                    socioToUpdate.CorreoElectronico = CurrentSocio.CorreoElectronico;
-                    socioToUpdate.DireccionPostal = CurrentSocio.DireccionPostal;
-                    socioToUpdate.FechaDeAlta = CurrentSocio.FechaDeAlta;
-                    socioToUpdate.FechaDeBaja = CurrentSocio.FechaDeBaja;
-
-                    await _context.SaveChangesAsync();
-
-                    var index = Socios.IndexOf(SelectedSocio);
-                    if (index >= 0)
+                    var socioToUpdate = await context.Socios.FindAsync(CurrentSocio.Id);
+                    if (socioToUpdate != null)
                     {
-                        Socios[index] = socioToUpdate;
-                    }
+                        socioToUpdate.Nombre = CurrentSocio.Nombre;
+                        socioToUpdate.Apellido1 = CurrentSocio.Apellido1;
+                        socioToUpdate.Apellido2 = CurrentSocio.Apellido2;
+                        socioToUpdate.Alta = CurrentSocio.Alta;
+                        socioToUpdate.Dni = CurrentSocio.Dni;
+                        socioToUpdate.FechaNacimiento = CurrentSocio.FechaNacimiento;
+                        socioToUpdate.NumeroDeSocio = CurrentSocio.NumeroDeSocio;
+                        socioToUpdate.NumeroDeTelefono = CurrentSocio.NumeroDeTelefono;
+                        socioToUpdate.CorreoElectronico = CurrentSocio.CorreoElectronico;
+                        socioToUpdate.DireccionPostal = CurrentSocio.DireccionPostal;
+                        socioToUpdate.FechaDeAlta = CurrentSocio.FechaDeAlta;
+                        socioToUpdate.FechaDeBaja = CurrentSocio.FechaDeBaja;
 
-                    ClearForm();
-                    MessageBox.Show("Socio updated successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                        await context.SaveChangesAsync();
+
+                        var index = Socios.IndexOf(SelectedSocio);
+                        if (index >= 0)
+                        {
+                            Socios[index] = socioToUpdate;
+                        }
+
+                        ClearForm();
+                        MessageBox.Show("Socio updated successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
                 }
             }
             catch (Exception ex)
@@ -212,22 +220,31 @@ namespace SocioManagerV2.ViewModels
 
                 if (result == MessageBoxResult.Yes)
                 {
-                    var socioToDelete = await _context.Socios.FindAsync(SelectedSocio.Id);
-                    if (socioToDelete != null)
+                    using (var context = new SociosContext())
                     {
-                        _context.Socios.Remove(socioToDelete);
-                        await _context.SaveChangesAsync();
+                        var socioToDelete = await context.Socios.FindAsync(SelectedSocio.Id);
+                        if (socioToDelete != null)
+                        {
+                            context.Socios.Remove(socioToDelete);
+                            await context.SaveChangesAsync();
 
-                        Socios.Remove(SelectedSocio);
-                        ClearForm();
+                            Socios.Remove(SelectedSocio);
+                            ClearForm();
 
-                        MessageBox.Show("Socio deleted successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                            MessageBox.Show("Socio deleted successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                        }
                     }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error deleting socio: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                var errorMessage = $"Error deleting socio: {ex.Message}";
+                if (ex.InnerException != null)
+                {
+                    errorMessage += $"\n\nInner Exception: {ex.InnerException.Message}";
+                }
+                errorMessage += $"\n\nStack Trace: {ex.StackTrace}";
+                MessageBox.Show(errorMessage, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

@@ -2,197 +2,212 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:converters="clr-namespace:SocioManagerV2.Converters"
-        Title="Socio Details"
-        Height="650" Width="500"
+        Title="Member Details"
+        Height="720" Width="560"
         WindowStartupLocation="CenterOwner"
-        ResizeMode="CanResize">
+        ResizeMode="CanResize"
+        Style="{StaticResource ModernWindowStyle}">
 
     <Window.Resources>
         <converters:IntToBoolConverter x:Key="IntToBoolConverter"/>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </Window.Resources>
 
-    <Grid Margin="20">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-
-        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,15">
-            <TextBlock Text="Socio Details" FontSize="18" FontWeight="Bold" VerticalAlignment="Center"/>
-            <TextBlock Text="{Binding Socio.Nombre, StringFormat=' - {0}'}" FontSize="16" VerticalAlignment="Center" Margin="5,0,0,0"/>
-        </StackPanel>
-
-        <!-- Ban Warning -->
-        <Border Grid.Row="1" 
-                Background="#FFEBEE" 
-                BorderBrush="#F44336" 
-                BorderThickness="2" 
-                CornerRadius="5" 
-                Padding="15" 
-                Margin="0,0,0,15"
-                Visibility="{Binding IsBanned, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <StackPanel>
-                <TextBlock Text="⚠️ WARNING: This socio is BANNED" 
+    <Grid>
+        <!-- Header -->
+        <Border Background="{StaticResource PrimaryBrush}" 
+                Height="90" 
+                VerticalAlignment="Top">
+            <StackPanel VerticalAlignment="Center" Margin="30,0">
+                <TextBlock Text="Member Details" 
+                           FontSize="24" 
                            FontWeight="Bold" 
-                           FontSize="14" 
-                           Foreground="#D32F2F"/>
-                <TextBlock Text="{Binding BanReason, StringFormat='Reason: {0}'}" 
-                           FontSize="12" 
-                           Foreground="#C62828" 
-                           Margin="0,5,0,0"
-                           TextWrapping="Wrap"/>
+                           Foreground="{StaticResource TextOnPrimaryBrush}"/>
+                <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                    <TextBlock Text="{Binding Socio.Nombre}" 
+                               FontSize="15" 
+                               Foreground="{StaticResource TextOnPrimaryBrush}"
+                               Opacity="0.9"/>
+                    <TextBlock Text="{Binding Socio.Apellido1, StringFormat=' {0}'}" 
+                               FontSize="15" 
+                               Foreground="{StaticResource TextOnPrimaryBrush}"
+                               Opacity="0.9"/>
+                </StackPanel>
             </StackPanel>
         </Border>
 
-        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
-            <StackPanel DataContext="{Binding Socio}">
-                <TextBlock Text="ID" FontWeight="Bold" Margin="0,5,0,2"/>
-                <TextBox Text="{Binding Id}" IsReadOnly="True" Background="#F5F5F5" Padding="5"/>
+        <!-- Content -->
+        <Grid Margin="0,90,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-                <TextBlock Text="Nombre *" FontWeight="Bold" Margin="0,10,0,2"/>
-                <TextBox Text="{Binding Nombre, UpdateSourceTrigger=PropertyChanged}" 
-                         IsReadOnly="{Binding DataContext.IsReadOnly, RelativeSource={RelativeSource AncestorType=Window}}"
-                         Padding="5"/>
+            <!-- Ban Warning -->
+            <Border Grid.Row="0" 
+                    Background="#FFEBEE" 
+                    BorderBrush="{StaticResource DangerBrush}" 
+                    BorderThickness="2" 
+                    CornerRadius="6" 
+                    Padding="20" 
+                    Margin="30,20,30,0"
+                    Visibility="{Binding IsBanned, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <StackPanel>
+                    <TextBlock Text="⚠️ WARNING: This member is BANNED" 
+                               FontWeight="Bold" 
+                               FontSize="15" 
+                               Foreground="{StaticResource DangerBrush}"/>
+                    <TextBlock Text="{Binding BanReason, StringFormat='Reason: {0}'}" 
+                               FontSize="13" 
+                               Foreground="{StaticResource DangerBrush}" 
+                               Margin="0,8,0,0"
+                               TextWrapping="Wrap"/>
+                </StackPanel>
+            </Border>
 
-                <TextBlock Text="Apellido 1" FontWeight="Bold" Margin="0,10,0,2"/>
-                <TextBox Text="{Binding Apellido1, UpdateSourceTrigger=PropertyChanged}" 
-                         IsReadOnly="{Binding DataContext.IsReadOnly, RelativeSource={RelativeSource AncestorType=Window}}"
-                         Padding="5"/>
+            <!-- Form Fields -->
+            <ScrollViewer Grid.Row="1" 
+                         Style="{StaticResource ModernScrollViewerStyle}"
+                         Margin="30,20,30,0">
+                <StackPanel DataContext="{Binding Socio}">
+                    <TextBlock Text="ID" Style="{StaticResource LabelTextBlockStyle}"/>
+                    <TextBox Text="{Binding Id}" 
+                            IsReadOnly="True" 
+                            Style="{StaticResource ModernTextBoxStyle}"/>
 
-                <TextBlock Text="Apellido 2" FontWeight="Bold" Margin="0,10,0,2"/>
-                <TextBox Text="{Binding Apellido2, UpdateSourceTrigger=PropertyChanged}" 
-                         IsReadOnly="{Binding DataContext.IsReadOnly, RelativeSource={RelativeSource AncestorType=Window}}"
-                         Padding="5"/>
+                    <TextBlock Text="Name *" Style="{StaticResource LabelTextBlockStyle}"/>
+                    <TextBox Text="{Binding Nombre, UpdateSourceTrigger=PropertyChanged}" 
+                            IsReadOnly="{Binding DataContext.IsReadOnly, RelativeSource={RelativeSource AncestorType=Window}}"
+                            Style="{StaticResource ModernTextBoxStyle}"/>
 
-                <TextBlock Text="DNI" FontWeight="Bold" Margin="0,10,0,2"/>
-                <TextBox Text="{Binding Dni, UpdateSourceTrigger=PropertyChanged}" 
-                         IsReadOnly="{Binding DataContext.IsReadOnly, RelativeSource={RelativeSource AncestorType=Window}}"
-                         Padding="5"/>
+                    <TextBlock Text="First Surname" Style="{StaticResource LabelTextBlockStyle}"/>
+                    <TextBox Text="{Binding Apellido1, UpdateSourceTrigger=PropertyChanged}" 
+                            IsReadOnly="{Binding DataContext.IsReadOnly, RelativeSource={RelativeSource AncestorType=Window}}"
+                            Style="{StaticResource ModernTextBoxStyle}"/>
 
-                <CheckBox Content="Alta" 
-                          FontWeight="Bold" 
-                          Margin="0,10,0,2"
-                          IsChecked="{Binding Alta, Converter={StaticResource IntToBoolConverter}, UpdateSourceTrigger=PropertyChanged}"
-                          IsEnabled="{Binding DataContext.IsEditMode, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                    <TextBlock Text="Second Surname" Style="{StaticResource LabelTextBlockStyle}"/>
+                    <TextBox Text="{Binding Apellido2, UpdateSourceTrigger=PropertyChanged}" 
+                            IsReadOnly="{Binding DataContext.IsReadOnly, RelativeSource={RelativeSource AncestorType=Window}}"
+                            Style="{StaticResource ModernTextBoxStyle}"/>
 
-                <TextBlock Text="Fecha de Nacimiento" FontWeight="Bold" Margin="0,10,0,2"/>
-                <DatePicker SelectedDate="{Binding FechaNacimiento, UpdateSourceTrigger=PropertyChanged}" 
-                            IsEnabled="{Binding DataContext.IsEditMode, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Padding="5"/>
+                    <TextBlock Text="ID Number (DNI)" Style="{StaticResource LabelTextBlockStyle}"/>
+                    <TextBox Text="{Binding Dni, UpdateSourceTrigger=PropertyChanged}" 
+                            IsReadOnly="{Binding DataContext.IsReadOnly, RelativeSource={RelativeSource AncestorType=Window}}"
+                            Style="{StaticResource ModernTextBoxStyle}"/>
 
-                <TextBlock Text="Número de Socio" FontWeight="Bold" Margin="0,10,0,2"/>
-                <TextBox Text="{Binding NumeroDeSocio, UpdateSourceTrigger=PropertyChanged}" 
-                         IsReadOnly="{Binding DataContext.IsReadOnly, RelativeSource={RelativeSource AncestorType=Window}}"
-                         Padding="5"/>
+                    <CheckBox Content="Alta" 
+                              Style="{StaticResource ModernCheckBoxStyle}"
+                              Margin="0,15,0,0"
+                              IsChecked="{Binding Alta, Converter={StaticResource IntToBoolConverter}, UpdateSourceTrigger=PropertyChanged}"
+                              IsEnabled="{Binding DataContext.IsEditMode, RelativeSource={RelativeSource AncestorType=Window}}"/>
 
-                <TextBlock Text="Número de Teléfono" FontWeight="Bold" Margin="0,10,0,2"/>
-                <TextBox Text="{Binding NumeroDeTelefono, UpdateSourceTrigger=PropertyChanged}" 
-                         IsReadOnly="{Binding DataContext.IsReadOnly, RelativeSource={RelativeSource AncestorType=Window}}"
-                         Padding="5"/>
+                    <TextBlock Text="Date of Birth" Style="{StaticResource LabelTextBlockStyle}"/>
+                    <DatePicker SelectedDate="{Binding FechaNacimiento, UpdateSourceTrigger=PropertyChanged}" 
+                               IsEnabled="{Binding DataContext.IsEditMode, RelativeSource={RelativeSource AncestorType=Window}}"
+                               Style="{StaticResource ModernDatePickerStyle}"/>
 
-                <TextBlock Text="Correo Electrónico" FontWeight="Bold" Margin="0,10,0,2"/>
-                <TextBox Text="{Binding CorreoElectronico, UpdateSourceTrigger=PropertyChanged}" 
-                         IsReadOnly="{Binding DataContext.IsReadOnly, RelativeSource={RelativeSource AncestorType=Window}}"
-                         Padding="5"/>
+                    <TextBlock Text="Member Number" Style="{StaticResource LabelTextBlockStyle}"/>
+                    <TextBox Text="{Binding NumeroDeSocio, UpdateSourceTrigger=PropertyChanged}" 
+                            IsReadOnly="{Binding DataContext.IsReadOnly, RelativeSource={RelativeSource AncestorType=Window}}"
+                            Style="{StaticResource ModernTextBoxStyle}"/>
 
-                <TextBlock Text="Dirección Postal" FontWeight="Bold" Margin="0,10,0,2"/>
-                <TextBox Text="{Binding DireccionPostal, UpdateSourceTrigger=PropertyChanged}" 
-                         IsReadOnly="{Binding DataContext.IsReadOnly, RelativeSource={RelativeSource AncestorType=Window}}"
-                         Padding="5" Height="60" TextWrapping="Wrap" AcceptsReturn="True"/>
+                    <TextBlock Text="Phone Number" Style="{StaticResource LabelTextBlockStyle}"/>
+                    <TextBox Text="{Binding NumeroDeTelefono, UpdateSourceTrigger=PropertyChanged}" 
+                            IsReadOnly="{Binding DataContext.IsReadOnly, RelativeSource={RelativeSource AncestorType=Window}}"
+                            Style="{StaticResource ModernTextBoxStyle}"/>
 
-                <TextBlock Text="Fecha de Alta" FontWeight="Bold" Margin="0,10,0,2"/>
-                <DatePicker SelectedDate="{Binding FechaDeAlta, UpdateSourceTrigger=PropertyChanged}" 
-                            IsEnabled="{Binding DataContext.IsEditMode, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Padding="5"/>
+                    <TextBlock Text="Email" Style="{StaticResource LabelTextBlockStyle}"/>
+                    <TextBox Text="{Binding CorreoElectronico, UpdateSourceTrigger=PropertyChanged}" 
+                            IsReadOnly="{Binding DataContext.IsReadOnly, RelativeSource={RelativeSource AncestorType=Window}}"
+                            Style="{StaticResource ModernTextBoxStyle}"/>
 
-                <TextBlock Text="Fecha de Baja" FontWeight="Bold" Margin="0,10,0,2"/>
-                <DatePicker SelectedDate="{Binding FechaDeBaja, UpdateSourceTrigger=PropertyChanged}" 
-                            IsEnabled="{Binding DataContext.IsEditMode, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Padding="5"/>
-            </StackPanel>
-        </ScrollViewer>
+                    <TextBlock Text="Postal Address" Style="{StaticResource LabelTextBlockStyle}"/>
+                    <TextBox Text="{Binding DireccionPostal, UpdateSourceTrigger=PropertyChanged}" 
+                            IsReadOnly="{Binding DataContext.IsReadOnly, RelativeSource={RelativeSource AncestorType=Window}}"
+                            Style="{StaticResource ModernTextBoxStyle}"
+                            Height="70" 
+                            TextWrapping="Wrap" 
+                            AcceptsReturn="True"
+                            VerticalContentAlignment="Top"/>
 
-        <!-- Action Buttons -->
-        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,0">
-            <Button Content="Edit" 
-                    Command="{Binding EditCommand}"
-                    Background="#2196F3" 
-                    Foreground="White"
-                    Padding="20,10"
-                    FontWeight="Bold"
-                    MinWidth="100"
-                    Margin="0,0,10,0">
-                <Button.Style>
-                    <Style TargetType="Button">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsEditMode}" Value="True">
+                    <TextBlock Text="Registration Date" Style="{StaticResource LabelTextBlockStyle}"/>
+                    <DatePicker SelectedDate="{Binding FechaDeAlta, UpdateSourceTrigger=PropertyChanged}" 
+                               IsEnabled="{Binding DataContext.IsEditMode, RelativeSource={RelativeSource AncestorType=Window}}"
+                               Style="{StaticResource ModernDatePickerStyle}"/>
+
+                    <TextBlock Text="Termination Date" Style="{StaticResource LabelTextBlockStyle}"/>
+                    <DatePicker SelectedDate="{Binding FechaDeBaja, UpdateSourceTrigger=PropertyChanged}" 
+                               IsEnabled="{Binding DataContext.IsEditMode, RelativeSource={RelativeSource AncestorType=Window}}"
+                               Style="{StaticResource ModernDatePickerStyle}"/>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- Action Buttons -->
+            <Border Grid.Row="2" 
+                    Background="{StaticResource SurfaceBrush}" 
+                    BorderBrush="{StaticResource BorderLightBrush}"
+                    BorderThickness="0,1,0,0"
+                    Padding="30,20">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Content="✏️ Edit" 
+                            Command="{Binding EditCommand}"
+                            Margin="0,0,15,0">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource PrimaryButtonStyle}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsEditMode}" Value="True">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+
+                    <Button Content="💾 Save" 
+                            Command="{Binding SaveCommand}"
+                            Margin="0,0,15,0">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource SuccessButtonStyle}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Button.Style>
-            </Button>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsEditMode}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
 
-            <Button Content="Save" 
-                    Command="{Binding SaveCommand}"
-                    Background="#4CAF50" 
-                    Foreground="White"
-                    Padding="20,10"
-                    FontWeight="Bold"
-                    MinWidth="100"
-                    Margin="0,0,10,0">
-                <Button.Style>
-                    <Style TargetType="Button">
-                        <Setter Property="Visibility" Value="Collapsed"/>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsEditMode}" Value="True">
-                                <Setter Property="Visibility" Value="Visible"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Button.Style>
-            </Button>
-
-            <Button Content="Cancel" 
-                    Command="{Binding CancelCommand}"
-                    Background="#FF9800" 
-                    Foreground="White"
-                    Padding="20,10"
-                    FontWeight="Bold"
-                    MinWidth="100"
-                    Margin="0,0,10,0">
-                <Button.Style>
-                    <Style TargetType="Button">
-                        <Setter Property="Visibility" Value="Collapsed"/>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsEditMode}" Value="True">
-                                <Setter Property="Visibility" Value="Visible"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Button.Style>
-            </Button>
-
-            <Button Content="Close" 
-                    Command="{Binding CloseCommand}"
-                    Background="#9E9E9E" 
-                    Foreground="White"
-                    Padding="20,10"
-                    FontWeight="Bold"
-                    MinWidth="100">
-                <Button.Style>
-                    <Style TargetType="Button">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsEditMode}" Value="True">
+                    <Button Content="⚠️ Cancel" 
+                            Command="{Binding CancelCommand}"
+                            Margin="0,0,15,0">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource WarningButtonStyle}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Button.Style>
-            </Button>
-        </StackPanel>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsEditMode}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+
+                    <Button Content="✖ Close" 
+                            Command="{Binding CloseCommand}">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource NeutralButtonStyle}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsEditMode}" Value="True">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </StackPanel>
+            </Border>
+        </Grid>
     </Grid>
 </Window>

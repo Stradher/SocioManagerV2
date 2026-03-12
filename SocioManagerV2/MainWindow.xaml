@@ -2,61 +2,90 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="clr-namespace:SocioManagerV2.ViewModels"
-        Title="Socio Manager V2 - CRUD Operations"
-        Height="700" Width="1400">
+        Title="Socio Manager V2"
+        Height="700" Width="1400"
+        Style="{StaticResource ModernWindowStyle}">
 
     <Window.DataContext>
         <vm:MainViewModel/>
     </Window.DataContext>
 
-    <Grid Margin="10">
+    <Grid Margin="0">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Title -->
-        <TextBlock Grid.Row="0" Text="Socios List" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
+        <!-- Header Section -->
+        <Border Grid.Row="0" Background="{StaticResource PrimaryBrush}" Padding="30,20">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
 
-        <!-- Action Buttons -->
-        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,10">
-            <Button Content="➕ Add New Socio" 
-                    Command="{Binding AddCommand}"
-                    Background="#4CAF50" 
-                    Foreground="White"
-                    Padding="15,8"
-                    FontWeight="Bold"
-                    MinWidth="150"
-                    Margin="0,0,10,0"/>
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="Socio Manager V2" 
+                               FontSize="28" 
+                               FontWeight="Bold" 
+                               Foreground="{StaticResource TextOnPrimaryBrush}"/>
+                    <TextBlock Text="Member Management System" 
+                               FontSize="14" 
+                               Foreground="{StaticResource TextOnPrimaryBrush}"
+                               Opacity="0.8"
+                               Margin="0,5,0,0"/>
+                </StackPanel>
 
-            <Button Content="🗑️ Delete Selected" 
-                    Command="{Binding DeleteCommand}"
-                    Background="#F44336" 
-                    Foreground="White"
-                    Padding="15,8"
-                    FontWeight="Bold"
-                    MinWidth="150"/>
-        </StackPanel>
+                <!-- Action Buttons -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button Content="➕ Add New Member" 
+                            Command="{Binding AddCommand}"
+                            Style="{StaticResource SuccessButtonStyle}"
+                            Margin="0,0,15,0"/>
 
-        <!-- DataGrid -->
-        <DataGrid Grid.Row="2"
-                  ItemsSource="{Binding Socios}"
-                  SelectedItem="{Binding SelectedSocio, Mode=TwoWay}"
-                  AutoGenerateColumns="False"
-                  SelectionMode="Single"
-                  CanUserAddRows="False"
-                  IsReadOnly="True"
-                  MouseDoubleClick="DataGrid_MouseDoubleClick">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50"/>
-                <DataGridTextColumn Header="Nombre" Binding="{Binding Nombre}" Width="*"/>
-                <DataGridTextColumn Header="Apellido1" Binding="{Binding Apellido1}" Width="*"/>
-                <DataGridTextColumn Header="Apellido2" Binding="{Binding Apellido2}" Width="*"/>
-                <DataGridTextColumn Header="DNI" Binding="{Binding Dni}" Width="100"/>
-                <DataGridTextColumn Header="Número de Socio" Binding="{Binding NumeroDeSocio}" Width="120"/>
-                <DataGridTextColumn Header="Teléfono" Binding="{Binding NumeroDeTelefono}" Width="120"/>
-            </DataGrid.Columns>
-        </DataGrid>
+                    <Button Content="🗑️ Delete Selected" 
+                            Command="{Binding DeleteCommand}"
+                            Style="{StaticResource DangerButtonStyle}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Content Section -->
+        <Border Grid.Row="1" Background="{StaticResource BackgroundBrush}" Padding="30">
+            <Border Style="{StaticResource CardBorderStyle}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" 
+                               Text="Members Directory" 
+                               Style="{StaticResource SubtitleTextBlockStyle}"
+                               Margin="0,0,0,20"/>
+
+                    <!-- DataGrid -->
+                    <DataGrid Grid.Row="1"
+                              ItemsSource="{Binding Socios}"
+                              SelectedItem="{Binding SelectedSocio, Mode=TwoWay}"
+                              Style="{StaticResource ModernDataGridStyle}"
+                              ColumnHeaderStyle="{StaticResource ModernDataGridColumnHeaderStyle}"
+                              RowStyle="{StaticResource ModernDataGridRowStyle}"
+                              CellStyle="{StaticResource ModernDataGridCellStyle}"
+                              IsReadOnly="True"
+                              MouseDoubleClick="DataGrid_MouseDoubleClick">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60"/>
+                            <DataGridTextColumn Header="Name" Binding="{Binding Nombre}" Width="*"/>
+                            <DataGridTextColumn Header="First Surname" Binding="{Binding Apellido1}" Width="*"/>
+                            <DataGridTextColumn Header="Second Surname" Binding="{Binding Apellido2}" Width="*"/>
+                            <DataGridTextColumn Header="ID Number" Binding="{Binding Dni}" Width="120"/>
+                            <DataGridTextColumn Header="Member #" Binding="{Binding NumeroDeSocio}" Width="100"/>
+                            <DataGridTextColumn Header="Phone" Binding="{Binding NumeroDeTelefono}" Width="130"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </Border>
+        </Border>
     </Grid>
 </Window>

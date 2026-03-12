@@ -12,7 +12,6 @@ namespace SocioManagerV2.ViewModels
 {
     public class AddSocioViewModel : INotifyPropertyChanged
     {
-        private readonly SociosContext _context = new SociosContext();
         private Socio _newSocio;
 
         public Socio NewSocio
@@ -77,8 +76,11 @@ namespace SocioManagerV2.ViewModels
                     return;
                 }
 
-                _context.Socios.Add(NewSocio);
-                await _context.SaveChangesAsync();
+                using (var context = new SociosContext())
+                {
+                    context.Socios.Add(NewSocio);
+                    await context.SaveChangesAsync();
+                }
 
                 MessageBox.Show("Socio added successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
 
@@ -88,7 +90,12 @@ namespace SocioManagerV2.ViewModels
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error adding socio: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                var errorMessage = $"Error adding socio: {ex.Message}";
+                if (ex.InnerException != null)
+                {
+                    errorMessage += $"\n\nInner Exception: {ex.InnerException.Message}";
+                }
+                MessageBox.Show(errorMessage, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

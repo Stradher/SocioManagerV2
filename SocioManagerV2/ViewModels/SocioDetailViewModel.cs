@@ -11,7 +11,6 @@ namespace SocioManagerV2.ViewModels
 {
     public class SocioDetailViewModel : INotifyPropertyChanged
     {
-        private readonly SociosContext _context = new SociosContext();
         private Socio _socio;
         private bool _isEditMode = false;
         private bool _isBanned = false;
@@ -98,11 +97,14 @@ namespace SocioManagerV2.ViewModels
         {
             if (!string.IsNullOrWhiteSpace(Socio.Dni))
             {
-                IsBanned = _context.Vetados.Any(v => v.dni != null && v.dni == Socio.Dni);
-                if (IsBanned)
+                using (var context = new SociosContext())
                 {
-                    var vetado = _context.Vetados.FirstOrDefault(v => v.dni != null && v.dni == Socio.Dni);
-                    BanReason = vetado?.motivo ?? "Unknown reason";
+                    IsBanned = context.Vetados.Any(v => v.dni != null && v.dni == Socio.Dni);
+                    if (IsBanned)
+                    {
+                        var vetado = context.Vetados.FirstOrDefault(v => v.dni != null && v.dni == Socio.Dni);
+                        BanReason = vetado?.motivo ?? "Unknown reason";
+                    }
                 }
             }
         }
@@ -122,29 +124,32 @@ namespace SocioManagerV2.ViewModels
                     return;
                 }
 
-                var socioToUpdate = await _context.Socios.FindAsync(Socio.Id);
-                if (socioToUpdate != null)
+                using (var context = new SociosContext())
                 {
-                    socioToUpdate.Nombre = Socio.Nombre;
-                    socioToUpdate.Apellido1 = Socio.Apellido1;
-                    socioToUpdate.Apellido2 = Socio.Apellido2;
-                    socioToUpdate.Alta = Socio.Alta;
-                    socioToUpdate.Dni = Socio.Dni;
-                    socioToUpdate.FechaNacimiento = Socio.FechaNacimiento;
-                    socioToUpdate.NumeroDeSocio = Socio.NumeroDeSocio;
-                    socioToUpdate.NumeroDeTelefono = Socio.NumeroDeTelefono;
-                    socioToUpdate.CorreoElectronico = Socio.CorreoElectronico;
-                    socioToUpdate.DireccionPostal = Socio.DireccionPostal;
-                    socioToUpdate.FechaDeAlta = Socio.FechaDeAlta;
-                    socioToUpdate.FechaDeBaja = Socio.FechaDeBaja;
+                    var socioToUpdate = await context.Socios.FindAsync(Socio.Id);
+                    if (socioToUpdate != null)
+                    {
+                        socioToUpdate.Nombre = Socio.Nombre;
+                        socioToUpdate.Apellido1 = Socio.Apellido1;
+                        socioToUpdate.Apellido2 = Socio.Apellido2;
+                        socioToUpdate.Alta = Socio.Alta;
+                        socioToUpdate.Dni = Socio.Dni;
+                        socioToUpdate.FechaNacimiento = Socio.FechaNacimiento;
+                        socioToUpdate.NumeroDeSocio = Socio.NumeroDeSocio;
+                        socioToUpdate.NumeroDeTelefono = Socio.NumeroDeTelefono;
+                        socioToUpdate.CorreoElectronico = Socio.CorreoElectronico;
+                        socioToUpdate.DireccionPostal = Socio.DireccionPostal;
+                        socioToUpdate.FechaDeAlta = Socio.FechaDeAlta;
+                        socioToUpdate.FechaDeBaja = Socio.FechaDeBaja;
 
-                    await _context.SaveChangesAsync();
+                        await context.SaveChangesAsync();
 
-                    MessageBox.Show("Socio updated successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                        MessageBox.Show("Socio updated successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                    SocioUpdated?.Invoke(this, socioToUpdate);
+                        SocioUpdated?.Invoke(this, socioToUpdate);
 
-                    IsEditMode = false;
+                        IsEditMode = false;
+                    }
                 }
             }
             catch (Exception ex)

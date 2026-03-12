@@ -3,10 +3,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="clr-namespace:SocioManagerV2.ViewModels"
         xmlns:converters="clr-namespace:SocioManagerV2.Converters"
-        Title="Add New Socio"
-        Height="600" Width="450"
+        Title="Add New Member"
+        Height="680" Width="520"
         WindowStartupLocation="CenterOwner"
-        ResizeMode="NoResize">
+        ResizeMode="NoResize"
+        Style="{StaticResource ModernWindowStyle}">
 
     <Window.Resources>
         <converters:IntToBoolConverter x:Key="IntToBoolConverter"/>
@@ -16,74 +17,107 @@
         <vm:AddSocioViewModel/>
     </Window.DataContext>
 
-    <Grid Margin="20">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-
-        <TextBlock Grid.Row="0" Text="New Socio Details" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
-
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-            <StackPanel DataContext="{Binding NewSocio}">
-                <TextBlock Text="Nombre *" FontWeight="Bold" Margin="0,5,0,2"/>
-                <TextBox Text="{Binding Nombre, UpdateSourceTrigger=PropertyChanged}" Padding="5"/>
-
-                <TextBlock Text="Apellido 1" FontWeight="Bold" Margin="0,10,0,2"/>
-                <TextBox Text="{Binding Apellido1, UpdateSourceTrigger=PropertyChanged}" Padding="5"/>
-
-                <TextBlock Text="Apellido 2" FontWeight="Bold" Margin="0,10,0,2"/>
-                <TextBox Text="{Binding Apellido2, UpdateSourceTrigger=PropertyChanged}" Padding="5"/>
-
-                <TextBlock Text="DNI" FontWeight="Bold" Margin="0,10,0,2"/>
-                <TextBox Text="{Binding Dni, UpdateSourceTrigger=PropertyChanged}" Padding="5"/>
-
-                <TextBlock Text="Alta" FontWeight="Bold" Margin="0,10,0,2"/>
-                <TextBox Text="{Binding Alta, UpdateSourceTrigger=PropertyChanged}" Padding="5"/>
-
-                <TextBlock Text="Fecha de Nacimiento" FontWeight="Bold" Margin="0,10,0,2"/>
-                <DatePicker SelectedDate="{Binding FechaNacimiento, UpdateSourceTrigger=PropertyChanged}" Padding="5"/>
-
-                <TextBlock Text="Número de Socio" FontWeight="Bold" Margin="0,10,0,2"/>
-                <TextBox Text="{Binding NumeroDeSocio, UpdateSourceTrigger=PropertyChanged}" Padding="5"/>
-
-                <TextBlock Text="Número de Teléfono" FontWeight="Bold" Margin="0,10,0,2"/>
-                <TextBox Text="{Binding NumeroDeTelefono, UpdateSourceTrigger=PropertyChanged}" Padding="5"/>
-
-                <TextBlock Text="Correo Electrónico" FontWeight="Bold" Margin="0,10,0,2"/>
-                <TextBox Text="{Binding CorreoElectronico, UpdateSourceTrigger=PropertyChanged}" Padding="5"/>
-
-                <TextBlock Text="Dirección Postal" FontWeight="Bold" Margin="0,10,0,2"/>
-                <TextBox Text="{Binding DireccionPostal, UpdateSourceTrigger=PropertyChanged}" 
-                         Padding="5" Height="60" TextWrapping="Wrap" AcceptsReturn="True"/>
-
-                <TextBlock Text="Fecha de Alta" FontWeight="Bold" Margin="0,10,0,2"/>
-                <DatePicker SelectedDate="{Binding FechaDeAlta, UpdateSourceTrigger=PropertyChanged}" Padding="5"/>
-
-                <TextBlock Text="Fecha de Baja" FontWeight="Bold" Margin="0,10,0,2"/>
-                <DatePicker SelectedDate="{Binding FechaDeBaja, UpdateSourceTrigger=PropertyChanged}" Padding="5"/>
+    <Grid>
+        <!-- Header -->
+        <Border Background="{StaticResource PrimaryBrush}" 
+                Height="80" 
+                VerticalAlignment="Top">
+            <StackPanel VerticalAlignment="Center" Margin="30,0">
+                <TextBlock Text="Add New Member" 
+                           FontSize="24" 
+                           FontWeight="Bold" 
+                           Foreground="{StaticResource TextOnPrimaryBrush}"/>
+                <TextBlock Text="Enter member information below" 
+                           FontSize="13" 
+                           Foreground="{StaticResource TextOnPrimaryBrush}"
+                           Opacity="0.8"
+                           Margin="0,5,0,0"/>
             </StackPanel>
-        </ScrollViewer>
+        </Border>
 
-        <!-- Action Buttons -->
-        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,0">
-            <Button Content="Save" 
-                    Command="{Binding SaveCommand}"
-                    Background="#4CAF50" 
-                    Foreground="White"
-                    Padding="20,10"
-                    FontWeight="Bold"
-                    MinWidth="100"
-                    Margin="0,0,10,0"/>
+        <!-- Content -->
+        <Grid Margin="0,80,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-            <Button Content="Cancel" 
-                    Command="{Binding CancelCommand}"
-                    Background="#9E9E9E" 
-                    Foreground="White"
-                    Padding="20,10"
-                    FontWeight="Bold"
-                    MinWidth="100"/>
-        </StackPanel>
+            <!-- Form Fields -->
+            <ScrollViewer Grid.Row="0" 
+                         Style="{StaticResource ModernScrollViewerStyle}"
+                         Margin="30,20,30,0">
+                <StackPanel DataContext="{Binding NewSocio}">
+                    <TextBlock Text="Name *" Style="{StaticResource LabelTextBlockStyle}"/>
+                    <TextBox Text="{Binding Nombre, UpdateSourceTrigger=PropertyChanged}" 
+                            Style="{StaticResource ModernTextBoxStyle}"/>
+
+                    <TextBlock Text="First Surname" Style="{StaticResource LabelTextBlockStyle}"/>
+                    <TextBox Text="{Binding Apellido1, UpdateSourceTrigger=PropertyChanged}" 
+                            Style="{StaticResource ModernTextBoxStyle}"/>
+
+                    <TextBlock Text="Second Surname" Style="{StaticResource LabelTextBlockStyle}"/>
+                    <TextBox Text="{Binding Apellido2, UpdateSourceTrigger=PropertyChanged}" 
+                            Style="{StaticResource ModernTextBoxStyle}"/>
+
+                    <TextBlock Text="ID Number (DNI)" Style="{StaticResource LabelTextBlockStyle}"/>
+                    <TextBox Text="{Binding Dni, UpdateSourceTrigger=PropertyChanged}" 
+                            Style="{StaticResource ModernTextBoxStyle}"/>
+
+                    <TextBlock Text="Alta" Style="{StaticResource LabelTextBlockStyle}"/>
+                    <TextBox Text="{Binding Alta, UpdateSourceTrigger=PropertyChanged}" 
+                            Style="{StaticResource ModernTextBoxStyle}"/>
+
+                    <TextBlock Text="Date of Birth" Style="{StaticResource LabelTextBlockStyle}"/>
+                    <DatePicker SelectedDate="{Binding FechaNacimiento, UpdateSourceTrigger=PropertyChanged}" 
+                               Style="{StaticResource ModernDatePickerStyle}"/>
+
+                    <TextBlock Text="Member Number" Style="{StaticResource LabelTextBlockStyle}"/>
+                    <TextBox Text="{Binding NumeroDeSocio, UpdateSourceTrigger=PropertyChanged}" 
+                            Style="{StaticResource ModernTextBoxStyle}"/>
+
+                    <TextBlock Text="Phone Number" Style="{StaticResource LabelTextBlockStyle}"/>
+                    <TextBox Text="{Binding NumeroDeTelefono, UpdateSourceTrigger=PropertyChanged}" 
+                            Style="{StaticResource ModernTextBoxStyle}"/>
+
+                    <TextBlock Text="Email" Style="{StaticResource LabelTextBlockStyle}"/>
+                    <TextBox Text="{Binding CorreoElectronico, UpdateSourceTrigger=PropertyChanged}" 
+                            Style="{StaticResource ModernTextBoxStyle}"/>
+
+                    <TextBlock Text="Postal Address" Style="{StaticResource LabelTextBlockStyle}"/>
+                    <TextBox Text="{Binding DireccionPostal, UpdateSourceTrigger=PropertyChanged}" 
+                            Style="{StaticResource ModernTextBoxStyle}"
+                            Height="70" 
+                            TextWrapping="Wrap" 
+                            AcceptsReturn="True"
+                            VerticalContentAlignment="Top"/>
+
+                    <TextBlock Text="Registration Date" Style="{StaticResource LabelTextBlockStyle}"/>
+                    <DatePicker SelectedDate="{Binding FechaDeAlta, UpdateSourceTrigger=PropertyChanged}" 
+                               Style="{StaticResource ModernDatePickerStyle}"/>
+
+                    <TextBlock Text="Termination Date" Style="{StaticResource LabelTextBlockStyle}"/>
+                    <DatePicker SelectedDate="{Binding FechaDeBaja, UpdateSourceTrigger=PropertyChanged}" 
+                               Style="{StaticResource ModernDatePickerStyle}"/>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- Action Buttons -->
+            <Border Grid.Row="1" 
+                    Background="{StaticResource SurfaceBrush}" 
+                    BorderBrush="{StaticResource BorderLightBrush}"
+                    BorderThickness="0,1,0,0"
+                    Padding="30,20">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Content="💾 Save" 
+                            Command="{Binding SaveCommand}"
+                            Style="{StaticResource SuccessButtonStyle}"
+                            Margin="0,0,15,0"/>
+
+                    <Button Content="✖ Cancel" 
+                            Command="{Binding CancelCommand}"
+                            Style="{StaticResource NeutralButtonStyle}"/>
+                </StackPanel>
+            </Border>
+        </Grid>
     </Grid>
 </Window>

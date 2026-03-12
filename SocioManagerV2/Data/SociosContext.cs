@@ -23,7 +23,11 @@ namespace SocioManagerV2.Data
                 Directory.CreateDirectory(directory!);
             }
 
-            options.UseSqlite($"Data Source={dbPath}");
+            var connectionString = $"Data Source={dbPath};Mode=ReadWriteCreate;Cache=Shared;Pooling=False";
+            options.UseSqlite(connectionString, sqliteOptions => 
+            {
+                sqliteOptions.CommandTimeout(30);
+            });
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
