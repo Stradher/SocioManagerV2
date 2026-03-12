@@ -57,7 +57,14 @@ namespace SocioManagerV2.ViewModels
                     return;
                 }
 
-                if(IsDniInDatabase(NewSocio.Dni))
+                if(isNumberRegistered(NewSocio.NumeroDeSocio))
+                {
+                    MessageBox.Show("There is already a socio with this number", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+
+                }
+
+                if (IsDniInDatabase(NewSocio.Dni))
                 {
                     MessageBox.Show("This DNI is already registered", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
@@ -164,6 +171,15 @@ namespace SocioManagerV2.ViewModels
         {
             using var context = new SociosContext();
             return context.Vetados.Any(v => v.dni != null && v.dni == dni);
+        }
+
+        // Check if the Socio number is already registerd
+
+        public static bool isNumberRegistered(int number)
+        {
+            using var context = new SociosContext();
+            return context.Socios.Any(s => s.NumeroDeSocio != null && s.NumeroDeSocio == number);
+
         }
 
         public static string reasonBanned(string dni)

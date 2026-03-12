@@ -11,7 +11,7 @@ namespace SocioManagerV2.Models
         public int Alta { get; set; }
         public string? Dni { get; set; }
         public DateTime FechaNacimiento { get; set; }
-        public string? NumeroDeSocio { get; set; }
+        public int NumeroDeSocio { get; set; }
         public string? NumeroDeTelefono { get; set; }
         public string? CorreoElectronico { get; set; }
         public string? DireccionPostal { get; set; }
