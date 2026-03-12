@@ -67,6 +67,8 @@ namespace SocioManagerV2.ViewModels
 
         public MainViewModel()
         {
+            _context.Database.EnsureCreated();
+
             Socios = new ObservableCollection<Socio>();
             CurrentSocio = new Socio { FechaNacimiento = DateTime.Now, FechaDeAlta = DateTime.Now };
 

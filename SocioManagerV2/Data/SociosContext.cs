@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SocioManagerV2.Models;
+using System.IO;
 
 namespace SocioManagerV2.Data
 {
@@ -10,13 +11,19 @@ namespace SocioManagerV2.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            var connectionString =
-                "server=localhost;database=socios_db;user=root;password=root123";
-
-            options.UseMySql(
-                connectionString,
-                ServerVersion.AutoDetect(connectionString)
+            var dbPath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "SocioManager",
+                "socios.db"
             );
+
+            var directory = Path.GetDirectoryName(dbPath);
+            if (!Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory!);
+            }
+
+            options.UseSqlite($"Data Source={dbPath}");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
