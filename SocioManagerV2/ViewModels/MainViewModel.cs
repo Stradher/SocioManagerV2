@@ -63,6 +63,7 @@ namespace SocioManagerV2.ViewModels
         public ICommand DeleteCommand { get; }
         public ICommand ClearCommand { get; }
         public ICommand ViewSocioDetailsCommand { get; }
+        public ICommand SearchCommand { get; }
 
         public MainViewModel()
         {
@@ -79,6 +80,7 @@ namespace SocioManagerV2.ViewModels
             DeleteCommand = new RelayCommand(async _ => await DeleteSocio(), _ => SelectedSocio != null);
             ClearCommand = new RelayCommand(_ => ClearForm());
             ViewSocioDetailsCommand = new RelayCommand(_ => OpenSocioDetailWindow(), _ => SelectedSocio != null);
+            SearchCommand = new RelayCommand(_ => OpenSearchWindow());
 
             LoadSocios();
         }
@@ -101,6 +103,31 @@ namespace SocioManagerV2.ViewModels
             {
                 MessageBox.Show($"Error loading data: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private void OpenSearchWindow()
+        {
+            var searchWindow = new SearchWindow
+            {
+                Owner = Application.Current.MainWindow
+            };
+
+            var viewModel = searchWindow.DataContext as SearchViewModel;
+            if (viewModel != null)
+            {
+                viewModel.SocioSelected += (sender, selectedSocio) =>
+                {
+                    var existingSocio = Socios.FirstOrDefault(s => s.Id == selectedSocio.Id);
+                    if (existingSocio != null)
+                    {
+                        SelectedSocio = existingSocio;
+                    }
+                    searchWindow.DialogResult = true;
+                    searchWindow.Close();
+                };
+            }
+
+            searchWindow.ShowDialog();
         }
 
         private void OpenAddSocioWindow()

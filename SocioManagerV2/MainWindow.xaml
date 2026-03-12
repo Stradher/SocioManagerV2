@@ -38,6 +38,11 @@
 
                 <!-- Action Buttons -->
                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button Content="🔍 Search Members" 
+                            Command="{Binding SearchCommand}"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            Margin="0,0,15,0"/>
+
                     <Button Content="➕ Add New Member" 
                             Command="{Binding AddCommand}"
                             Style="{StaticResource SuccessButtonStyle}"

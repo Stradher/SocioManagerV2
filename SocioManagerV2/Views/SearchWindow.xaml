@@ -1,0 +1,156 @@
+<Window x:Class="SocioManagerV2.Views.SearchWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:SocioManagerV2.ViewModels"
+        Title="Search Members"
+        Height="650" Width="900"
+        Style="{StaticResource ModernWindowStyle}"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="CanResize">
+
+    <Window.DataContext>
+        <vm:SearchViewModel/>
+    </Window.DataContext>
+
+    <Grid Margin="0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header Section -->
+        <Border Grid.Row="0" Background="{StaticResource PrimaryBrush}" Padding="30,20">
+            <StackPanel>
+                <TextBlock Text="🔍 Search Members" 
+                           FontSize="28" 
+                           FontWeight="Bold" 
+                           Foreground="{StaticResource TextOnPrimaryBrush}"/>
+                <TextBlock Text="Find members by name, DNI, or member number" 
+                           FontSize="14" 
+                           Foreground="{StaticResource TextOnPrimaryBrush}"
+                           Opacity="0.8"
+                           Margin="0,5,0,0"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Content Section -->
+        <Border Grid.Row="1" Background="{StaticResource BackgroundBrush}" Padding="30">
+            <Border Style="{StaticResource CardBorderStyle}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Search Criteria -->
+                    <StackPanel Grid.Row="0" Margin="0,0,0,20">
+                        <TextBlock Text="Search Criteria" 
+                                   Style="{StaticResource SubtitleTextBlockStyle}"
+                                   Margin="0,0,0,15"/>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Name Search -->
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Name / Surname" 
+                                           Style="{StaticResource LabelTextBlockStyle}"/>
+                                <TextBox Text="{Binding SearchName, UpdateSourceTrigger=PropertyChanged}"
+                                         Style="{StaticResource ModernTextBoxStyle}"/>
+                            </StackPanel>
+
+                            <!-- DNI Search -->
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="DNI" 
+                                           Style="{StaticResource LabelTextBlockStyle}"/>
+                                <TextBox Text="{Binding SearchDni, UpdateSourceTrigger=PropertyChanged}"
+                                         Style="{StaticResource ModernTextBoxStyle}"/>
+                            </StackPanel>
+
+                            <!-- Member Number Search -->
+                            <StackPanel Grid.Column="4">
+                                <TextBlock Text="Member Number" 
+                                           Style="{StaticResource LabelTextBlockStyle}"/>
+                                <TextBox Text="{Binding SearchNumeroDeSocio, UpdateSourceTrigger=PropertyChanged}"
+                                         Style="{StaticResource ModernTextBoxStyle}"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Search Buttons -->
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,0">
+                            <Button Content="🔍 Search" 
+                                    Command="{Binding SearchCommand}"
+                                    Style="{StaticResource PrimaryButtonStyle}"
+                                    Margin="0,0,10,0"/>
+                            <Button Content="Clear" 
+                                    Command="{Binding ClearCommand}"
+                                    Style="{StaticResource NeutralButtonStyle}"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <!-- Search Results -->
+                    <Border Grid.Row="1" BorderBrush="{StaticResource BorderLightBrush}" 
+                            BorderThickness="1" CornerRadius="6" Padding="0">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <Border Grid.Row="0" Background="{StaticResource BackgroundBrush}" 
+                                    Padding="15,10" BorderBrush="{StaticResource BorderLightBrush}" 
+                                    BorderThickness="0,0,0,1">
+                                <TextBlock Text="Search Results" 
+                                           FontSize="14" 
+                                           FontWeight="SemiBold"
+                                           Foreground="{StaticResource TextPrimaryBrush}"/>
+                            </Border>
+
+                            <DataGrid Grid.Row="1"
+                                      ItemsSource="{Binding SearchResultsView}"
+                                      SelectedItem="{Binding SelectedSocio, Mode=TwoWay}"
+                                      Style="{StaticResource ModernDataGridStyle}"
+                                      ColumnHeaderStyle="{StaticResource ModernDataGridColumnHeaderStyle}"
+                                      RowStyle="{StaticResource ModernDataGridRowStyle}"
+                                      CellStyle="{StaticResource ModernDataGridCellStyle}"
+                                      IsReadOnly="True"
+                                      MouseDoubleClick="DataGrid_MouseDoubleClick">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60"/>
+                                    <DataGridTextColumn Header="Name" Binding="{Binding Nombre}" Width="*"/>
+                                    <DataGridTextColumn Header="First Surname" Binding="{Binding Apellido1}" Width="*"/>
+                                    <DataGridTextColumn Header="Second Surname" Binding="{Binding Apellido2}" Width="*"/>
+                                    <DataGridTextColumn Header="DNI" Binding="{Binding Dni}" Width="120"/>
+                                    <DataGridTextColumn Header="Member #" Binding="{Binding NumeroDeSocio}" Width="100"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Border>
+        </Border>
+
+        <!-- Footer Section -->
+        <Border Grid.Row="2" Background="{StaticResource SurfaceBrush}" 
+                BorderBrush="{StaticResource BorderLightBrush}" 
+                BorderThickness="0,1,0,0" 
+                Padding="30,15">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="✓ Select" 
+                        Command="{Binding SelectCommand}"
+                        Style="{StaticResource SuccessButtonStyle}"
+                        Margin="0,0,10,0"/>
+                <Button Content="Cancel" 
+                        Click="CancelButton_Click"
+                        Style="{StaticResource NeutralButtonStyle}"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>
