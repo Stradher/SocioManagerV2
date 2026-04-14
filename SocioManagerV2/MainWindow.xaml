@@ -38,7 +38,12 @@
 
                 <!-- Action Buttons -->
                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                    <Button Content="🔍 Search Members" 
+                    <Button Content="🎲 Board Games" 
+                            Command="{Binding OpenBoardGamesCommand}"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            Margin="0,0,15,0"/>
+
+                    <Button Content="🔍 Search Members"
                             Command="{Binding SearchCommand}"
                             Style="{StaticResource PrimaryButtonStyle}"
                             Margin="0,0,15,0"/>

@@ -1,0 +1,80 @@
+<Window x:Class="SocioManagerV2.Views.BoardGamesWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:SocioManagerV2.ViewModels"
+        Title="Board Games Manager" 
+        Height="500" Width="800"
+        Style="{StaticResource ModernWindowStyle}"
+        WindowStartupLocation="CenterOwner">
+
+    <Window.DataContext>
+        <vm:BoardGamesViewModel />
+    </Window.DataContext>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Background="{StaticResource PrimaryBrush}" Padding="20">
+            <TextBlock Text="🎲 Manage Board Games" 
+                       FontSize="24" FontWeight="Bold" 
+                       Foreground="{StaticResource TextOnPrimaryBrush}"/>
+        </Border>
+
+        <!-- Form Section -->
+        <Border Grid.Row="1" Background="{StaticResource BackgroundBrush}" Padding="20">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                    <TextBlock Text="Game Name" Style="{StaticResource LabelTextBlockStyle}"/>
+                    <TextBox Text="{Binding GameName, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBoxStyle}"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Margin="10,0,10,0">
+                    <TextBlock Text="Owner (Leave empty for Club)" Style="{StaticResource LabelTextBlockStyle}"/>
+                    <ComboBox ItemsSource="{Binding Socios}" 
+                              SelectedItem="{Binding SelectedOwner}" 
+                              DisplayMemberPath="Nombre" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="2" VerticalAlignment="Bottom" Orientation="Horizontal" Margin="10,0,0,0">
+                    <Button Content="➕ Add Game" 
+                            Command="{Binding AddCommand}" 
+                            Style="{StaticResource SuccessButtonStyle}"
+                            Margin="0,0,10,0" MinHeight="36" Padding="15,5"/>
+
+                    <Button Content="🗑️ Delete Selected" 
+                            Command="{Binding DeleteCommand}" 
+                            Style="{StaticResource DangerButtonStyle}" MinHeight="36" Padding="15,5"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- DataGrid Section -->
+        <Border Grid.Row="2" Background="{StaticResource BackgroundBrush}" Padding="20,0,20,20">
+            <DataGrid ItemsSource="{Binding BoardGames}" 
+                      SelectedItem="{Binding SelectedGame, Mode=TwoWay}"
+                      Style="{StaticResource ModernDataGridStyle}"
+                      ColumnHeaderStyle="{StaticResource ModernDataGridColumnHeaderStyle}"
+                      RowStyle="{StaticResource ModernDataGridRowStyle}"
+                      CellStyle="{StaticResource ModernDataGridCellStyle}"
+                      IsReadOnly="True">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60"/>
+                    <DataGridTextColumn Header="Game Name" Binding="{Binding Name}" Width="*"/>
+                    <DataGridTextColumn Header="Owner Name" Binding="{Binding Owner.Nombre, TargetNullValue=Club}" Width="*"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+
+    </Grid>
+</Window>

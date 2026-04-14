@@ -64,12 +64,18 @@ namespace SocioManagerV2.ViewModels
         public ICommand ClearCommand { get; }
         public ICommand ViewSocioDetailsCommand { get; }
         public ICommand SearchCommand { get; }
+        public ICommand OpenBoardGamesCommand { get; }
 
         public MainViewModel()
         {
             using (var context = new SociosContext())
             {
                 context.Database.EnsureCreated();
+                try 
+                {
+                    context.Database.ExecuteSqlRaw("CREATE TABLE IF NOT EXISTS board_games (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, owner_id INTEGER, FOREIGN KEY(owner_id) REFERENCES socios(id) ON DELETE SET NULL);");
+                } 
+                catch { }
             }
 
             Socios = new ObservableCollection<Socio>();
@@ -81,6 +87,7 @@ namespace SocioManagerV2.ViewModels
             ClearCommand = new RelayCommand(_ => ClearForm());
             ViewSocioDetailsCommand = new RelayCommand(_ => OpenSocioDetailWindow(), _ => SelectedSocio != null);
             SearchCommand = new RelayCommand(_ => OpenSearchWindow());
+            OpenBoardGamesCommand = new RelayCommand(_ => OpenBoardGamesWindow());
 
             LoadSocios();
         }
@@ -128,6 +135,15 @@ namespace SocioManagerV2.ViewModels
             }
 
             searchWindow.ShowDialog();
+        }
+
+        private void OpenBoardGamesWindow()
+        {
+            var boardGamesWindow = new BoardGamesWindow
+            {
+                Owner = Application.Current.MainWindow
+            };
+            boardGamesWindow.ShowDialog();
         }
 
         private void OpenAddSocioWindow()

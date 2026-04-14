@@ -8,6 +8,7 @@ namespace SocioManagerV2.Data
     {
         public DbSet<Socio> Socios { get; set; }
         public DbSet<Vetado> Vetados { get; set; }
+        public DbSet<BoardGame> BoardGames { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
@@ -109,6 +110,26 @@ namespace SocioManagerV2.Data
             modelBuilder.Entity<Usuario>()
                 .Property(u => u.isAdmin)
                 .HasColumnName("esAdmin");
+
+            modelBuilder.Entity<BoardGame>().ToTable("board_games");
+
+            modelBuilder.Entity<BoardGame>()
+                .Property(b => b.Id)
+                .HasColumnName("id");
+
+            modelBuilder.Entity<BoardGame>()
+                .Property(b => b.Name)
+                .HasColumnName("name");
+
+            modelBuilder.Entity<BoardGame>()
+                .Property(b => b.OwnerId)
+                .HasColumnName("owner_id");
+
+            modelBuilder.Entity<BoardGame>()
+                .HasOne(b => b.Owner)
+                .WithMany()
+                .HasForeignKey(b => b.OwnerId)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }
