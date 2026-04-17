@@ -65,6 +65,8 @@ namespace SocioManagerV2.ViewModels
         public ICommand ViewSocioDetailsCommand { get; }
         public ICommand SearchCommand { get; }
         public ICommand OpenBoardGamesCommand { get; }
+        public ICommand OpenRoomsCommand { get; }
+        public ICommand OpenFinanceCommand { get; }
 
         public MainViewModel()
         {
@@ -74,6 +76,11 @@ namespace SocioManagerV2.ViewModels
                 try 
                 {
                     context.Database.ExecuteSqlRaw("CREATE TABLE IF NOT EXISTS board_games (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, owner_id INTEGER, FOREIGN KEY(owner_id) REFERENCES socios(id) ON DELETE SET NULL);");
+                    context.Database.ExecuteSqlRaw("CREATE TABLE IF NOT EXISTS board_game_loans (id INTEGER PRIMARY KEY AUTOINCREMENT, board_game_id INTEGER NOT NULL, borrower_id INTEGER NOT NULL, loan_date TEXT NOT NULL, return_date TEXT, FOREIGN KEY(board_game_id) REFERENCES board_games(id) ON DELETE CASCADE, FOREIGN KEY(borrower_id) REFERENCES socios(id) ON DELETE CASCADE);");
+                    context.Database.ExecuteSqlRaw("CREATE TABLE IF NOT EXISTS rooms (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, max_capacity INTEGER NOT NULL);");
+                    context.Database.ExecuteSqlRaw("CREATE TABLE IF NOT EXISTS room_bookings (id INTEGER PRIMARY KEY AUTOINCREMENT, room_id INTEGER NOT NULL, booker_id INTEGER NOT NULL, booking_date TEXT NOT NULL, duration_minutes INTEGER NOT NULL, FOREIGN KEY(room_id) REFERENCES rooms(id) ON DELETE CASCADE, FOREIGN KEY(booker_id) REFERENCES socios(id) ON DELETE CASCADE);");
+                    context.Database.ExecuteSqlRaw("CREATE TABLE IF NOT EXISTS finance_transactions (id INTEGER PRIMARY KEY AUTOINCREMENT, amount DECIMAL(18,2) NOT NULL, date TEXT NOT NULL, concept TEXT NOT NULL, type TEXT NOT NULL, category TEXT NOT NULL);");
+                    context.Database.ExecuteSqlRaw("CREATE TABLE IF NOT EXISTS subscription_payments (id INTEGER PRIMARY KEY AUTOINCREMENT, socio_id INTEGER NOT NULL, month_year TEXT NOT NULL, payment_date TEXT NOT NULL, amount DECIMAL(18,2) NOT NULL, FOREIGN KEY(socio_id) REFERENCES socios(id) ON DELETE CASCADE);");
                 } 
                 catch { }
             }
@@ -88,6 +95,8 @@ namespace SocioManagerV2.ViewModels
             ViewSocioDetailsCommand = new RelayCommand(_ => OpenSocioDetailWindow(), _ => SelectedSocio != null);
             SearchCommand = new RelayCommand(_ => OpenSearchWindow());
             OpenBoardGamesCommand = new RelayCommand(_ => OpenBoardGamesWindow());
+            OpenRoomsCommand = new RelayCommand(_ => OpenRoomsWindow());
+            OpenFinanceCommand = new RelayCommand(_ => OpenFinanceWindow());
 
             LoadSocios();
         }
@@ -144,6 +153,24 @@ namespace SocioManagerV2.ViewModels
                 Owner = Application.Current.MainWindow
             };
             boardGamesWindow.ShowDialog();
+        }
+
+        private void OpenRoomsWindow()
+        {
+            var roomsWindow = new RoomsWindow
+            {
+                Owner = Application.Current.MainWindow
+            };
+            roomsWindow.ShowDialog();
+        }
+
+        private void OpenFinanceWindow()
+        {
+            var financeWindow = new FinanceWindow
+            {
+                Owner = Application.Current.MainWindow
+            };
+            financeWindow.ShowDialog();
         }
 
         private void OpenAddSocioWindow()

@@ -38,7 +38,17 @@
 
                 <!-- Action Buttons -->
                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                    <Button Content="🎲 Board Games" 
+                    <Button Content="💰 Finance" 
+                            Command="{Binding OpenFinanceCommand}"
+                            Style="{StaticResource SuccessButtonStyle}"
+                            Margin="0,0,15,0"/>
+
+                    <Button Content="🚪 Rooms" 
+                            Command="{Binding OpenRoomsCommand}"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            Margin="0,0,15,0"/>
+
+                    <Button Content="🎲 Board Games"
                             Command="{Binding OpenBoardGamesCommand}"
                             Style="{StaticResource PrimaryButtonStyle}"
                             Margin="0,0,15,0"/>

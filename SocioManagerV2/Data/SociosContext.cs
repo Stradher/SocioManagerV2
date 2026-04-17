@@ -9,6 +9,11 @@ namespace SocioManagerV2.Data
         public DbSet<Socio> Socios { get; set; }
         public DbSet<Vetado> Vetados { get; set; }
         public DbSet<BoardGame> BoardGames { get; set; }
+        public DbSet<BoardGameLoan> BoardGameLoans { get; set; }
+        public DbSet<Room> Rooms { get; set; }
+        public DbSet<RoomBooking> RoomBookings { get; set; }
+        public DbSet<FinanceTransaction> FinanceTransactions { get; set; }
+        public DbSet<SubscriptionPayment> SubscriptionPayments { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
@@ -81,36 +86,6 @@ namespace SocioManagerV2.Data
                 .Property(v => v.motivo)
                 .HasColumnName("motivo");
 
-            modelBuilder.Entity<Usuario>().ToTable("usuarios");
-
-                modelBuilder.Entity<Usuario>()
-                    .Property(u => u.Id)
-                    .HasColumnName("id");
-
-            modelBuilder.Entity<Usuario>()
-                .Property(u => u.Username)
-                .HasColumnName("username");
-
-            modelBuilder.Entity<Usuario>()
-                .Property(u => u.email)
-                .HasColumnName("email");
-
-            modelBuilder.Entity<Usuario>()
-                .Property(u => u.nombre)
-                .HasColumnName("nombre");
-
-            modelBuilder.Entity<Usuario>()
-                .Property(u => u.apellidos)
-                .HasColumnName("apellidos");
-
-            modelBuilder.Entity<Usuario>()
-                .Property(u => u.passwordHash)
-                .HasColumnName("password_hash");
-
-            modelBuilder.Entity<Usuario>()
-                .Property(u => u.isAdmin)
-                .HasColumnName("esAdmin");
-
             modelBuilder.Entity<BoardGame>().ToTable("board_games");
 
             modelBuilder.Entity<BoardGame>()
@@ -130,6 +105,122 @@ namespace SocioManagerV2.Data
                 .WithMany()
                 .HasForeignKey(b => b.OwnerId)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<BoardGameLoan>().ToTable("board_game_loans");
+
+            modelBuilder.Entity<BoardGameLoan>()
+                .Property(l => l.Id)
+                .HasColumnName("id");
+
+            modelBuilder.Entity<BoardGameLoan>()
+                .Property(l => l.BoardGameId)
+                .HasColumnName("board_game_id");
+
+            modelBuilder.Entity<BoardGameLoan>()
+                .Property(l => l.BorrowerId)
+                .HasColumnName("borrower_id");
+
+            modelBuilder.Entity<BoardGameLoan>()
+                .Property(l => l.LoanDate)
+                .HasColumnName("loan_date");
+
+            modelBuilder.Entity<BoardGameLoan>()
+                .Property(l => l.ReturnDate)
+                .HasColumnName("return_date");
+
+            modelBuilder.Entity<BoardGameLoan>()
+                .HasOne(l => l.BoardGame)
+                .WithMany()
+                .HasForeignKey(l => l.BoardGameId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<BoardGameLoan>()
+                .HasOne(l => l.Borrower)
+                .WithMany()
+                .HasForeignKey(l => l.BorrowerId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Room>().ToTable("rooms");
+
+            modelBuilder.Entity<Room>()
+                .Property(r => r.Id)
+                .HasColumnName("id");
+
+            modelBuilder.Entity<Room>()
+                .Property(r => r.Name)
+                .HasColumnName("name");
+
+            modelBuilder.Entity<Room>()
+                .Property(r => r.MaxCapacity)
+                .HasColumnName("max_capacity");
+
+            modelBuilder.Entity<RoomBooking>().ToTable("room_bookings");
+
+            modelBuilder.Entity<RoomBooking>()
+                .Property(b => b.Id)
+                .HasColumnName("id");
+
+            modelBuilder.Entity<RoomBooking>()
+                .Property(b => b.RoomId)
+                .HasColumnName("room_id");
+
+            modelBuilder.Entity<RoomBooking>()
+                .Property(b => b.BookerId)
+                .HasColumnName("booker_id");
+
+            modelBuilder.Entity<RoomBooking>()
+                .Property(b => b.BookingDate)
+                .HasColumnName("booking_date");
+
+            modelBuilder.Entity<RoomBooking>()
+                .Property(b => b.DurationMinutes)
+                .HasColumnName("duration_minutes");
+
+            modelBuilder.Entity<RoomBooking>()
+                .HasOne(b => b.Room)
+                .WithMany()
+                .HasForeignKey(b => b.RoomId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<RoomBooking>()
+                .HasOne(b => b.Booker)
+                .WithMany()
+                .HasForeignKey(b => b.BookerId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<FinanceTransaction>().ToTable("finance_transactions");
+
+            modelBuilder.Entity<FinanceTransaction>()
+                .Property(t => t.Id).HasColumnName("id");
+            modelBuilder.Entity<FinanceTransaction>()
+                .Property(t => t.Amount).HasColumnName("amount").HasColumnType("decimal(18,2)");
+            modelBuilder.Entity<FinanceTransaction>()
+                .Property(t => t.Date).HasColumnName("date");
+            modelBuilder.Entity<FinanceTransaction>()
+                .Property(t => t.Concept).HasColumnName("concept");
+            modelBuilder.Entity<FinanceTransaction>()
+                .Property(t => t.Type).HasColumnName("type");
+            modelBuilder.Entity<FinanceTransaction>()
+                .Property(t => t.Category).HasColumnName("category");
+
+            modelBuilder.Entity<SubscriptionPayment>().ToTable("subscription_payments");
+
+            modelBuilder.Entity<SubscriptionPayment>()
+                .Property(s => s.Id).HasColumnName("id");
+            modelBuilder.Entity<SubscriptionPayment>()
+                .Property(s => s.SocioId).HasColumnName("socio_id");
+            modelBuilder.Entity<SubscriptionPayment>()
+                .Property(s => s.MonthYear).HasColumnName("month_year");
+            modelBuilder.Entity<SubscriptionPayment>()
+                .Property(s => s.PaymentDate).HasColumnName("payment_date");
+            modelBuilder.Entity<SubscriptionPayment>()
+                .Property(s => s.Amount).HasColumnName("amount").HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<SubscriptionPayment>()
+                .HasOne(s => s.Socio)
+                .WithMany()
+                .HasForeignKey(s => s.SocioId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
